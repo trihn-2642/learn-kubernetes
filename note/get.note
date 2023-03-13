@@ -1,0 +1,62 @@
+# Lệnh get với một số đầu ra cơ bản
+kubectl get services                          # Liệt kê tất cả các services trong namespace
+kubectl get pods --all-namespaces             # Liệt kê tất cả các pods trong tất cả các namespaces
+kubectl get pods -o wide                      # Liệt kê tất cả các pods namespace, với nhiều thông tin hơn
+kubectl get deployment my-dep                 # Liệt kê một deployment cụ thể
+kubectl get pods                              # Liệt kê tất cả các pods trong namespace
+kubectl get pod my-pod -o yaml                # Lấy thông tin của một pod ở dạng YAML
+kubectl get pod my-pod -o yaml --export       # Lấy thông tin của một pod ở dạng YAML mà không có thông tin cụ thể về cụm
+
+# Lệnh describe
+kubectl describe nodes my-node
+kubectl describe pods my-pod
+
+# Liệt kê các services được sắp xếp theo tên
+kubectl get services --sort-by=.metadata.name
+
+# Liệt kê các pods được sắp xếp theo số lần khởi động lại
+kubectl get pods --sort-by='.status.containerStatuses[0].restartCount'
+
+# Liệt kê các pods được sắp xếp theo dung lượng trong namespace có tên là test
+
+kubectl get pods -n test --sort-by='.spec.capacity.storage'
+
+# Lấy thông tin phiên bản của tất cả các pods có nhãn app=cassandra
+kubectl get pods --selector=app=cassandra -o \
+  jsonpath='{.items[*].metadata.labels.version}'
+
+# Liệt kê tất cả các worker nodes (sử dụng một selector để loại trừ kết quả có một nhãn
+# có tên 'node-role.kubernetes.io/master'  
+kubectl get node --selector='!node-role.kubernetes.io/master'
+
+# Liệt kê tất cả các pods đang chạy trong namespace
+kubectl get pods --field-selector=status.phase=Running
+
+# Liệt kê tất cả các ExternalIPs của tất cả các nodes
+kubectl get nodes -o jsonpath='{.items[*].status.addresses[?(@.type=="ExternalIP")].address}'
+
+# Liệt kê tên của các pods thuộc về một RC nhất định
+# Lệnh "jq" hữu ích cho các chuyển đổi quá mức phức tạp cho jsonpath, xem thêm tại https://stedolan.github.io/jq/
+sel=${$(kubectl get rc my-rc --output=json | jq -j '.spec.selector | to_entries | .[] | "\(.key)=\(.value),"')%?}
+echo $(kubectl get pods --selector=$sel --output=jsonpath={.items..metadata.name})
+
+# Hiển thị nhãn của tất cả các pods (hoặc các đối tượng Kubernetes khác hỗ trợ gán nhãn)
+kubectl get pods --show-labels
+# Hiển thị pod của 1 label chỉ định
+kubectl get pods --selector label
+kubectl get pods -l label
+
+# Hiển thị pod của nhiều label chỉ định (có nhiều value khác nhau)
+kubectl get pods -l 'keyLabel in/notin (value1, value2)'
+# Hiển thị pod của nhiều lable chỉ định (pod phải có đủ các label đã liệt kê)
+kubectl get pods -l 'keyLabel in/notin (value1, value2), keyLabel2 in/notin (value1, value2)'
+
+# Kiểm tra xem nodes nào đã sẵn sàng
+JSONPATH='{range .items[*]}{@.metadata.name}:{range @.status.conditions[*]}{@.type}={@.status};{end}{end}' \
+ && kubectl get nodes -o jsonpath="$JSONPATH" | grep "Ready=True"
+
+# Liệt kê tất cả cá Secrets hiện đang sử dụng bởi một pod
+kubectl get pods -o json | jq '.items[].spec.containers[].env[]?.valueFrom.secretKeyRef.name' | grep -v null | sort | uniq
+
+# Liệt kê tất cả các sự kiện được sắp xếp theo thời gian
+kubectl get events --sort-by=.metadata.creationTimestamp

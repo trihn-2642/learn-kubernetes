@@ -1,0 +1,6 @@
+kubectl delete -f ./pod.json                                              # Xóa một pod sử dụng loại và tên được xác định trong pod.json
+kubectl delete pod,service, development baz foo                                        # Xóa pods, development và services có tên "baz" và "foo"
+kubectl delete pods,services, development -l name=myLabel                              # Xóa pods, development và services có nhãn name=myLabel
+kubectl -n my-ns delete pod,svc --all                                     # Xóa tất cả pods và services trong namespace my-ns,
+# Xóa tất cả pods matching với pattern1 hoặc pattern2
+kubectl get pods  -n mynamespace --no-headers=true | awk '/pattern1|pattern2/{print $1}' | xargs  kubectl delete -n mynamespace pod

@@ -1,0 +1,30 @@
+kubectl set image deployment/frontend www=image:v2               # Cập nhận container "www" của deployment "frontend", cập nhật image
+kubectl rollout history deployment/frontend                      # Kiểm tra lịch sử deployment bao gồm các sửa đổi
+kubectl rollout undo deployment/frontend                         # Quay trở lại deployment trước đó
+kubectl rollout undo deployment/frontend --to-revision=2         # Quay trở lại một phiên bản cụ thể
+kubectl rollout status -w deployment/frontend                    # Xem trạng thái cập nhật của deployment "frontend" cho đến khi hoàn thành
+
+
+# không còn được sử dụng kể từ phiên bản 1.11
+kubectl rolling-update frontend-v1 -f frontend-v2.json           # (không dùng nữa) Cập nhật pods của frontend-v1
+kubectl rolling-update frontend-v1 frontend-v2 --image=image:v2  # (không dùng nữa) Đổi tên tài nguyên và cập nhật image 
+kubectl rolling-update frontend --image=image:v2                 # (không dùng nữa) Cập nhật image của pod của frontend
+kubectl rolling-update frontend-v1 frontend-v2 --rollback        # (không dùng nữa) Hủy bỏ tiến trình cập nhật hiện tại
+
+cat pod.json | kubectl replace -f -                              # Thay thế một pod dựa trên JSON được truyền vào std
+
+# Buộc thay thế, xóa và sau đó tạo lại tài nguyên, sẽ gây ra sự cố ngưng services
+kubectl replace --force -f ./pod.json
+
+# Tạo một services cho nginx, phục vụ trên công 80 và kết nối đến các container trên cổng 8000
+kubectl expose rc nginx --port=80 --target-port=8000
+
+# Tạo một services cho apache, phục vụ trên công 80 và kết nối đến các container trên cổng 8080
+kubectl expose deployment name_deployment --name=name_apache-service --type=ClusterIP --port=8080 --target-port=8080
+
+# Cập nhật phiên bản image của một container đơn lẻ lên v4 
+kubectl get pod mypod -o yaml | sed 's/\(image: myimage\):.*$/\1:v4/' | kubectl replace -f -
+
+kubectl label pods my-pod new-label=awesome                      # Thêm một nhãn
+kubectl annotate pods my-pod icon-url=http://goo.gl/XXBTWq       # Thêm một chú thích
+kubectl autoscale deployment foo --min=2 --max=10                # Tự động scale deployment "foo"

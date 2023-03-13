@@ -1,0 +1,8 @@
+# Pods là gì ?
+
+Một POD là đơn vị thực hiện nhỏ nhất trong Kubernetes. Một pod gói gọn một hoặc nhiều ứng dụng. 
+PODS là phù du tự nhiên, nếu một nhóm (hoặc nút mà nó thực thi trên) không thành công, 
+Kubernetes có thể tự động tạo một bản sao mới của POD đó để tiếp tục hoạt động.
+
+# Tạo pod được hiện thị ở file helloworld-pod.yaml
+kubectl apply -f helloworld-pod.yaml 

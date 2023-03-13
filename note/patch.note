@@ -1,0 +1,14 @@
+# Cập nhật một phần một node
+kubectl patch node k8s-node-1 -p '{"spec":{"unschedulable":true}}'
+
+# Cập nhật image của container; spec.containers[*].name là bắt buộc vì đó là khóa hợp nhất
+kubectl patch pod valid-pod -p '{"spec":{"containers":[{"name":"kubernetes-serve-hostname","image":"new image"}]}}'
+
+# Cập nhật image của container sử dụng một bản vá json với các mảng vị trí
+kubectl patch pod valid-pod --type='json' -p='[{"op": "replace", "path": "/spec/containers/0/image", "value":"new image"}]'
+
+# Vô hiệu hóa một deployment livenessProbe sử dụng một bản vá json với các mảng vị trí
+kubectl patch deployment valid-deployment  --type json   -p='[{"op": "remove", "path": "/spec/template/spec/containers/0/livenessProbe"}]'
+
+# Thêm một phần tử mới vào một mảng vị trí
+kubectl patch sa default --type='json' -p='[{"op": "add", "path": "/secrets/1", "value": {"name": "whatever" } }]'

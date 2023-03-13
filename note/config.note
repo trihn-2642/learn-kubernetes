@@ -1,0 +1,27 @@
+kubectl config view # Hiển thị các thiết lập kubeconfig đã được merged
+
+# sử dụng nhiều tệp kubeconfig cùng một lúc và xem cấu hình hợp nhất
+KUBECONFIG=~/.kube/config:~/.kube/kubconfig2 
+
+kubectl config view
+
+# lấy mật khẩu cho người dùng e2e
+kubectl config view -o jsonpath='{.users[?(@.name == "e2e")].user.password}'
+
+kubectl config view -o jsonpath='{.users[].name}'    # hiển thị người dùng đầu tiên  
+kubectl config view -o jsonpath='{.users[*].name}'   # lấy danh sách người dùng  
+kubectl config get-contexts                          # hiển thị danh sách các ngữ cảnh 
+kubectl config current-context                       # hiển thị ngữ cảnh hiện tại
+kubectl config use-context my-cluster-name           # thiết lập ngữ cảnh mặc định cho my-cluster-name
+
+# thêm một cụm mới vào kubeconf hỗ trợ xác thực cơ bản
+kubectl config set-credentials kubeuser/foo.kubernetes.com --username=kubeuser --password=kubepassword
+
+# lưu vĩnh viễn namespace cho tất cả các lệnh kubectl tiếp theo trong ngữ cảnh đó
+kubectl config set-context --current --namespace=ggckad-s2
+
+# thiết lập ngữ cảnh sử dụng tên người dùng và namespace cụ thể
+kubectl config set-context gce --user=cluster-admin --namespace=foo \
+  && kubectl config use-context gce
+ 
+kubectl config unset users.foo                       # xóa người dùng foo

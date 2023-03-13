@@ -1,0 +1,45 @@
+kubectl apply -f ./my-manifest.yaml            # tạo tài nguyên
+kubectl apply -f ./my1.yaml -f ./my2.yaml      # tạo từ nhiều tệp
+kubectl apply -f ./dir                         # tạo tài nguyên từ tất cả các tệp manifest trong thư mục dir
+kubectl apply -f https://git.io/vPieo          # tạo tài nguyên từ url
+kubectl create deployment nginx --image=nginx  # tạo một deployment nginx
+kubectl explain pods,svc                       # lấy thông tin pod và service manifest
+
+# Tạo nhiều đối tượng YAML từ stdin
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox-sleep
+spec:
+  containers:
+  - name: busybox
+    image: busybox
+    args:
+    - sleep
+    - "1000000"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox-sleep-less
+spec:
+  containers:
+  - name: busybox
+    image: busybox
+    args:
+    - sleep
+    - "1000"
+EOF
+
+# Tạo một secret với một số keys
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysecret
+type: Opaque
+data:
+  password: $(echo -n "s33msi4" | base64 -w0)
+  username: $(echo -n "jane" | base64 -w0)
+EOF

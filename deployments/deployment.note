@@ -1,0 +1,5 @@
+
+# what is a kubernetes deployments: 
+Kubernetes deployments cho Kubernetes biết cách tạo hoặc sửa đổi các phiên bản của các nhóm giữ một ứng dụng container hóa. 
+Việc triển khai có thể giúp mở rộng quy mô hiệu quả số lượng nhóm bản sao, 
+cho phép triển khai mã được cập nhật theo cách được kiểm soát hoặc quay trở lại phiên bản triển khai trước đó nếu cần thiết.

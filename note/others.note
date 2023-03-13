@@ -1,0 +1,21 @@
+# Tương tác với các nodes và cụm
+
+kubectl cordon my-node                                                # Đánh dấu my-node là không thể lập lịch
+kubectl drain my-node                                                 # Gỡ my-node ra khỏi cụm để chuẩn bị cho việc bảo trì
+kubectl uncordon my-node                                              # Đánh dấu my-node có thể lập lịch trở lại
+kubectl top node my-node                                              # Hiển thị số liệu của node
+kubectl cluster-info                                                  # Hiển thị địa chỉ master và các services
+kubectl cluster-info dump                                             # Kết xuất trạng thái hiện tại của cụm ra ngoài stdout
+kubectl cluster-info dump --output-directory=/path/to/cluster-state   # Kết xuất trạng thái hiện tại của cụm vào /path/to/cluster-state
+
+kubectl taint nodes foo dedicated=special-user:NoSchedule
+
+
+# Các loại tài nguyên
+
+kubectl api-resources --namespaced=true      # Tất cả các tài nguyên được đặt tên
+kubectl api-resources --namespaced=false     # Tất cả các tài nguyên không được đặt tên
+kubectl api-resources -o name                # Tất cả các tài nguyên với đầu ra đơn giản (chỉ gồm tên tài nguyên)
+kubectl api-resources -o wide                # Tất cả các tài nguyên với đầu ra mở rộng
+kubectl api-resources --verbs=list,get       # Tất cả các tài nguyên hỗ trợ yêu cầu "list" và "get"
+kubectl api-resources --api-group=extensions # Tất cả tài nguyên trong nhóm API "tiện ích mở rộng"

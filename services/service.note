@@ -1,0 +1,5 @@
+# what is service in kubernetes
+
+Service Kubernetes là một bản tóm tắt logic cho một nhóm các nhóm được triển khai trong một cluster(cụm) (tất cả đều thực hiện cùng một chức năng).
+Vì POD là phù du, một service cho phép một nhóm POD, cung cấp các chức năng cụ thể (dịch vụ web, xử lý hình ảnh, v.v.) 
+được gán một tên và địa chỉ IP duy nhất (clusterIP).
